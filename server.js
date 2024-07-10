@@ -4,7 +4,6 @@ import { bootstrap } from './src/modules/bootstrap.js'
 import { AppError } from './src/utils/appError.js'
 import { globalError } from './src/middleware/globalError.js'
 
-
 const app = express()
 const port = 3000
 app.use(express.json());
