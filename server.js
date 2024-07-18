@@ -8,6 +8,8 @@ const app = express()
 const port = 3000
 app.use(express.json());
 bootstrap(app)
+app.use('/uploads',express.static('uploads'));
+
 
 // 4
 app.use('*', (req, res, next) => {
@@ -16,5 +18,4 @@ app.use('*', (req, res, next) => {
 // 3
 app.use(globalError)
 
-app.get('/', (req, res) => res.send('Hello World!'))
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

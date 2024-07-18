@@ -24,4 +24,8 @@ const schema = new Schema({
     versionKey: false,
 });
 
+schema.post('init', function (doc) {
+    doc.logo = 'http://localhost:3000/uploads/brands/' + doc.logo
+})
+
 export const Brand = model('Brand', schema)

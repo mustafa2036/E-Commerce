@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { addSubCategory, deleteSubCategory, getAllSubCategories, getSignleSubCategory, updateSubCategory } from "./subcategory.controller.js";
 
-const subCategoryRouter = Router();
+const subCategoryRouter = Router({ mergeParams: true });
 
 subCategoryRouter
     .route('/')
