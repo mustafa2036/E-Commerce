@@ -3,6 +3,7 @@ import { Category } from "../../../database/models/category.model.js"
 import { catchError } from "../../middleware/catchError.js"
 import { AppError } from '../../utils/appError.js'
 import { deleteHandle } from "../handlers/handlers.js"
+import { ApiFeatures } from '../../utils/apiFeatures.js'
 
 const addCategory = catchError( async(req, res, next) => {
     req.body.slug = slugify(req.body.name)
@@ -13,8 +14,10 @@ const addCategory = catchError( async(req, res, next) => {
 })
 
 const getAllCategories = catchError( async(req, res, next) => {
-    let categories = await Category.find()
-    res.json({ message: 'success', categories })
+    let apiFeatures = new ApiFeatures(Category.find(), req.query)
+    .pagination().fields().filter().sort().search()
+    let categories = await apiFeatures.monogoseQuery
+    res.json({ message: 'success', page: apiFeatures.pageNumber, categories })
 })
 
 const getSignleCategory = catchError( async(req, res, next) => {

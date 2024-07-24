@@ -3,6 +3,7 @@ import { Brand } from "../../../database/models/brand.model.js"
 import { catchError } from "../../middleware/catchError.js"
 import { AppError } from '../../utils/appError.js'
 import { deleteHandle } from "../handlers/handlers.js"
+import { ApiFeatures } from '../../utils/apiFeatures.js'
 
 const addBrand = catchError( async(req, res, next) => {
     req.body.slug = slugify(req.body.name)
@@ -13,8 +14,10 @@ const addBrand = catchError( async(req, res, next) => {
 })
 
 const allBrands = catchError( async(req, res, next) => {
-    let brands = await Brand.find()
-    res.json({ message: 'success', brands })
+    let apiFeatures = new ApiFeatures(Brand.find(), req.query)
+    .pagination().fields().filter().sort().search()
+    let brands = await apiFeatures.monogoseQuery
+    res.json({ message: 'success', page: apiFeatures.pageNumber, brands })
 })
 
 const getSignleBrand = catchError( async(req, res, next) => {

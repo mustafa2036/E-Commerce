@@ -2,6 +2,8 @@ import slugify from "slugify"
 import { catchError } from "../../middleware/catchError.js"
 import { AppError } from '../../utils/appError.js'
 import { Product } from "../../../database/models/product.model.js"
+import { deleteHandle } from "../handlers/handlers.js"
+import { ApiFeatures } from '../../utils/apiFeatures.js'
 
 const addProduct = catchError( async(req, res, next) => {
 
@@ -15,8 +17,10 @@ const addProduct = catchError( async(req, res, next) => {
 })
 
 const allProduct = catchError( async(req, res, next) => {
-    let products = await Product.find()
-    res.json({ message: 'success', products })
+    let apiFeatures = new ApiFeatures(Product.find(), req.query)
+    .pagination().fields().filter().sort().search()
+    let products = await apiFeatures.monogoseQuery
+    res.json({ message: 'success', page: apiFeatures.pageNumber, products })
 })
 
 const getSignleProduct = catchError( async(req, res, next) => {

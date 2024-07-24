@@ -3,6 +3,7 @@ import { SubCategory } from "../../../database/models/subCategory.model.js"
 import { catchError } from "../../middleware/catchError.js"
 import { AppError } from '../../utils/appError.js'
 import { deleteHandle } from "../handlers/handlers.js"
+import { ApiFeatures } from '../../utils/apiFeatures.js'
 
 const addSubCategory = catchError( async(req, res, next) => {
     req.body.slug = slugify(req.body.name)
@@ -12,10 +13,14 @@ const addSubCategory = catchError( async(req, res, next) => {
 })
 
 const getAllSubCategories = catchError( async(req, res, next) => {
-    let filterObj = {}
-    if(req.params.category) filterObj.category = req.params.category
-    let subCategories = await SubCategory.find(filterObj)
-    res.json({ message: 'success', subCategories })
+    let filter = {}
+    if(req.params.category) filter.category = req.params.category
+    let apiFeatures = new ApiFeatures(SubCategory.find(filter), req.query)
+    .pagination().fields().filter().sort().search()
+    
+    let subCategories = await apiFeatures.monogoseQuery
+    res.json({ message: 'success', page: apiFeatures.pageNumber, subCategories })
+
 })
 
 const getSignleSubCategory = catchError( async(req, res, next) => {
