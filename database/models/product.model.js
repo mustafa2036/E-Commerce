@@ -66,8 +66,8 @@ const schema = new Schema({
 
 schema.post('init', function (doc) {
     
-    if(doc.imageCover) doc.imageCover = "http://localhost:3000/uploads/products/" + doc.imageCover
-    if(doc.images) doc.images = doc.images.map(img => "http://localhost:3000/uploads/products/" + img)
+    if(doc.imageCover) doc.imageCover = process.env.BASE_URL + "uploads/products/" + doc.imageCover
+    if(doc.images) doc.images = doc.images.map(img => process.env.BASE_URL + "uploads/products/" + img)
 })
 
 export const Product = model('Product', schema)

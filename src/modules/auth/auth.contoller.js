@@ -7,14 +7,14 @@ import { AppError } from '../../utils/appError.js'
 const signup = catchError(async (req, res) => {
     let user = new User(req.body)
     await user.save()
-    let token = jwt.sign({ userId:  user._id, role: user.role}, "KeyScreet")
+    let token = jwt.sign({ userId:  user._id, role: user.role}, process.env.SECRET_KEY)
     res.status(201).json({ message: "Success", token })
 })
 
 const signin = catchError(async (req, res, next) => {
     let user = await User.findOne({ email: req.body.email })
     if(user && bcrypt.compareSync(req.body.password, user.password)){
-        let token = jwt.sign({userId: user._id, role: user.role}, "KeyScreet")
+        let token = jwt.sign({userId: user._id, role: user.role}, process.env.SECRET_KEY)
         return res.json({ message: 'success', token })
     }
     next(new AppError('Incorrect Password or Email', 401))
